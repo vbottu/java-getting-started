@@ -1,9 +1,11 @@
 pipeline {
   agent any
+  tools {
+        maven '3.5.0' 
+    }
   stages {
     stage('Build') {
       steps {
-        tool(name: '3.5.0', type: 'maven')
         sh 'mvn clean install'
       }
     }
