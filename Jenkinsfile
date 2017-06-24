@@ -1,35 +1,24 @@
-pipeline {
-  agent any
-  tools {
-        maven '3.5.0' 
+def mvnHome
+stage('Preparation') { 
+    node {
+        git 'https://github.com/rhels/java-getting-started.git'
     }
-  stages {
-    stage('Build') {
-      steps {
-        sh 'mvn clean install'
-      }
+}
+
+stage("build & SonarQube analysis") {
+  node {
+    mvnHome = tool '3.5.0'
+     withSonarQubeEnv('Local') {
+       sh "${mvnHome}/bin/mvn clean package sonar:sonar"
+     }
     }
-  stage("SonarQube analysis") {
-          node {
-              withSonarQubeEnv('My SonarQube Server') {
-                 sh 'mvn sonar:sonar'
-              }
-          }
-      
   }
-  stage("Quality Gate"){
-          timeout(time: 1, unit: 'HOURS') {
-              def qg = waitForQualityGate()
-              if (qg.status != 'OK') {
-                  error "Pipeline aborted due to quality gate failure: ${qg.status}"
-              }
-          }
-      
-  }
-  stage('Notify') {
-      steps {
-        emailext(subject: '$JENKINS_JOB_URL $JOB_STATUS', attachLog: true, to: 'kr@rhels.com', body: '$JENKINS_JOB_URL $JOB_STATUS')
-      }
+
+stage("Quality Gate"){
+  timeout(time: 1, unit: 'HOURS') {
+  def qg = waitForQualityGate()
+  if (qg.status != 'OK') {
+      error "Pipeline aborted due to quality gate failure: ${qg.status}"
     }
   }
 }
