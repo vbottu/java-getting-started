@@ -1,5 +1,5 @@
 def mvnHome
-stage('Preparation') { 
+stage('Checkout') { 
     node {
         git 'https://github.com/vbottu/java-getting-started.git'
     }
