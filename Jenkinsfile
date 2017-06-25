@@ -1,7 +1,7 @@
 def mvnHome
 stage('Preparation') { 
     node {
-        git 'https://github.com/rhels/java-getting-started.git'
+        git 'https://github.com/vbottu/java-getting-started.git'
     }
 }
 
