@@ -1,0 +1,35 @@
+Steps for spinning up jenkins and sonarqube using docker
+Install docker by following the below steps
+install yum-utils if not already installed
+add docker-ce repo using the below command
+sudo yum-config-manager \
+    --add-repo \
+    https://download.docker.com/linux/centos/docker-ce.repo
+run the below command
+sudo yum makecahce fast
+install docker using the below command
+sudo yum install docker-ce
+start the docker service using the below command
+systemctl start docker
+enable the docker service to launch at system reboot
+systemctl enable docker
+pull the official jenkins image using the below command
+docker pull library/jenkins
+run the container using the below command
+docker run -p 8080:8080 -p 50000:50000 -v /your/home:/var/jenkins_home jenkins
+pull the official sonarqube docker image using below command
+docker pull library/sonarqube
+launch the container using the below command
+docker run -d -p 9000:9000 --name sonarqube sonarqube(-d runs the container in detached mode)
+get the initialAdminPassword for jenkins using docker logs containeid(jenkins container id , can get list of all containers using docker ps -a)
+once you are in the browser window enter the initialAdminpassword and follow the onscreen prompts
+Similarly access the sonarqube web at http://<ip-address>:9000/ and login using default credentials(admin/admin)
+Generate a server authenticaion token by going to security and then users and click on generate token, copy the token and click done.
+Back to the jenkins window, click on manage jenkins-->configure system and then click on add sonarqube
+Provide a name and the sonarqube address and the security token that is generated in the previous step.
+Click save and apply the changes.
+Click on new Item , give a name and select pipeline from below options.
+In the source code section select git and then give the repository URL and add the necessary credentials for git.
+Select gitSCM webhook polling option in order to enable automatic builds when someone checks in the code
+In order to enable webhook polling, go to manage jenkins --> configure system --> git hub--> advanced-->check the webhook checkbox and then copy the webhook URl , uncheck the checkbox and leave that page
+Login to github account and then select the repository that is added in jenkins and then click on settings, on the left hand side there will be a webhooks section , click on it and add the webhook URL that is just copied from jenkins.
