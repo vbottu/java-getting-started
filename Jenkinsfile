@@ -4,7 +4,6 @@ stage('Checkout') {
         git 'https://github.com/vbottu/java-getting-started.git'
     }
 }
-
 stage("build & SonarQube analysis") {
   node {
     mvnHome = tool '3.5.0'
@@ -13,7 +12,6 @@ stage("build & SonarQube analysis") {
      }
     }
   }
-
 stage("Quality Gate"){
   timeout(time: 1, unit: 'HOURS') {
   def qg = waitForQualityGate()
